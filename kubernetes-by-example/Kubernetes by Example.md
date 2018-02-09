@@ -19,18 +19,27 @@ A pod is a collection of containers sharing a network and mount namespace. A pod
 ### Useful commands
 
 1. To create and run a pod:
-   kubectl run [name] —image=[image_source]:[version] —port=[port]  
-   ex: kubectl run sise --image=mhausenblas/simpleservice:0.5.0 --port=9876
+
+   `kubectl run [name] —image=[image_source]:[version] —port=[port]`  
+   ex: `kubectl run sise --image=mhausenblas/simpleservice:0.5.0 --port=9876`  
+
 2. To view all pods:
-   kubectl get pods
+   
+   `kubectl get pods`  
+
 3. To view detailed information about pods:
-   kubectl describe pods
+   
+   `kubectl describe pods`  
+
 4. To view detailed information about specific pod:
-   kubectl describe pod [name]   
-   ex: kubectl describe pod sise-2343179185-9pl08
+   
+   `kubectl describe pod [name]`   
+   ex: `kubectl describe pod sise-2343179185-9pl08`  
+
 5. To create a pod with configuration file
-   kubectl create -f [source]  
-   ex: kubectl create -f https://raw.githubusercontent.com/mhausenblas/kbe/master/specs/pods/pod.yaml
+
+   `kubectl create -f [source]`  
+   ex: `kubectl create -f https://raw.githubusercontent.com/mhausenblas/kbe/master/specs/pods/pod.yaml`  
 
 Unresolved issues:
 - [Solved] Can’t ssh to pod (or node?) from cmd, must do it from terminal in Minishift web app. Solved by using minikube and use “minikube ssh” command.
