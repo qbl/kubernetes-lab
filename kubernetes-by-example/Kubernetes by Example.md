@@ -1,14 +1,7 @@
 # Kubernetes by Example
 
 ## Requirements
-- Have “kubectl“ installed
 
-## 1. Pods
-
-Concept:
-A pod is a collection of containers sharing a network and mount namespace. A pod is the basic unit of deployment in Kubernetes. All containers in a pod are scheduled on the same node.
-
-Steps:
 - Install minikube
 - [Install xhyve](https://github.com/mist64/xhyve)
 - Optional [Install minishift](https://docs.openshift.org/latest/minishift/getting-started/installing.html)
@@ -17,26 +10,33 @@ Steps:
 - [Optional] Setup minishift oc-env (minishift oc-env, eval $(minishift oc-env))
 - [Optional] login as admin (oc login -u system:admin)
 
-Useful commands:
-- To create and run a pod:
-    - kubectl run [name] —image=[image_source]:[version] —port=[port]
-    - ex: kubectl run sise --image=mhausenblas/simpleservice:0.5.0 --port=9876
-- To view all pods:
-    - kubectl get pods
-- To view detailed information about pods:
-    - kubectl describe pods
-- To view detailed information about specific pod:
-    - kubectl describe pod [name]
-    - ex: kubectl describe pod sise-2343179185-9pl08
-- To create a pod with configuration file
-    - kubectl create -f [source]
-    - ex: kubectl create -f https://raw.githubusercontent.com/mhausenblas/kbe/master/specs/pods/pod.yaml
+## 1. Pods
+
+### Concept
+
+A pod is a collection of containers sharing a network and mount namespace. A pod is the basic unit of deployment in Kubernetes. All containers in a pod are scheduled on the same node.
+
+### Useful commands
+
+1. To create and run a pod:
+  * kubectl run [name] —image=[image_source]:[version] —port=[port]
+  * ex: kubectl run sise --image=mhausenblas/simpleservice:0.5.0 --port=9876
+2. To view all pods:
+  * kubectl get pods
+3. To view detailed information about pods:
+  * kubectl describe pods
+4. To view detailed information about specific pod:
+  * kubectl describe pod [name]
+  * ex: kubectl describe pod sise-2343179185-9pl08
+5. To create a pod with configuration file
+  * kubectl create -f [source]
+  * ex: kubectl create -f https://raw.githubusercontent.com/mhausenblas/kbe/master/specs/pods/pod.yaml
 
 Unresolved issues:
 - [Solved] Can’t ssh to pod (or node?) from cmd, must do it from terminal in Minishift web app. Solved by using minikube and use “minikube ssh” command.
 - Can’t run “kubectl create -f [source]”. At first it displayed “Error from server (Forbidden): unknown”. After I managed to login as admin with “oc login -u system:admin”, it displayed “Error from server (NotFound): the server could not find the requested resource”. Solved by using minikube which has the latest kubernetes server version (minishift has 1.6 version while minikube has 1.9 version).
 
-2 - Labels
+## 2. Labels
 
 Concept: 
 
@@ -61,7 +61,7 @@ Useful commands:
     - kubectl get pods -l ‘[complex conditions]’
     - ex: kubectl get pods -l ‘env in (development, production)’
 
-3 - Replication Controllers
+## 3. Replication Controllers
 
 Concept:
 
