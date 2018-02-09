@@ -16,7 +16,7 @@
 
 A pod is a collection of containers sharing a network and mount namespace. A pod is the basic unit of deployment in Kubernetes. All containers in a pod are scheduled on the same node.
 
-### Useful commands
+### Commonly Used Commands
 
 1. To create and run a pod:
 
@@ -41,46 +41,52 @@ A pod is a collection of containers sharing a network and mount namespace. A pod
    `kubectl create -f [source]`  
    ex: `kubectl create -f https://raw.githubusercontent.com/mhausenblas/kbe/master/specs/pods/pod.yaml`  
 
-Unresolved issues:
-- [Solved] Can’t ssh to pod (or node?) from cmd, must do it from terminal in Minishift web app. Solved by using minikube and use “minikube ssh” command.
-- Can’t run “kubectl create -f [source]”. At first it displayed “Error from server (Forbidden): unknown”. After I managed to login as admin with “oc login -u system:admin”, it displayed “Error from server (NotFound): the server could not find the requested resource”. Solved by using minikube which has the latest kubernetes server version (minishift has 1.6 version while minikube has 1.9 version).
+### Issues:
+
+* [Solved] Can’t ssh to pod (or node?) from cmd, must do it from terminal in Minishift web app. Solved by using minikube and use “minikube ssh” command.
+* [Solved] Can’t run “kubectl create -f [source]”. At first it displayed “Error from server (Forbidden): unknown”. After I managed to login as admin with “oc login -u system:admin”, it displayed “Error from server (NotFound): the server could not find the requested resource”. Solved by using minikube which has the latest kubernetes server version (minishift has 1.6 version while minikube has 1.9 version).
 
 ## 2. Labels
 
-Concept: 
+### Concept
 
 Labels are mechanism to organize Kubernetes objects. A Label is a key-value pair with certain restrictions (length and value) but without any pre-defined meaning.
 
-Steps:
+### Steps
 
 - Define label in a configuration file. See “kubernetes-by-example/labels/pod.yaml” file to see how to define labels in a configuration file.
 
-Useful commands:
+### Commonly Used Commands
 
-- To create label from command line:
-    - kubectl label pods [pod_name] [label]
-    - ex: kubectl label pods labelex owner=iqbal
-- To show pods with their labels:
-    - kubectl get pods --show-label
-- To use a label for filtering:
-    - kubectl get pods --selector [label]
-    - ex: kubectl get pods --selector owner=iqbal
-    - kubectl get pods -l [label]
-    - ex: kubectl get pods -l owner=iqbal
-    - kubectl get pods -l ‘[complex conditions]’
-    - ex: kubectl get pods -l ‘env in (development, production)’
+1. To create label from command line:
+
+   `kubectl label pods [pod_name] [label]`  
+   ex: `kubectl label pods labelex owner=iqbal`  
+
+2. To show pods with their labels:
+
+   `kubectl get pods --show-label`  
+
+3. To use a label for filtering:
+
+   `kubectl get pods --selector [label]`  
+   ex: `kubectl get pods --selector owner=iqbal`  
+   `kubectl get pods -l [label]`  
+   ex: `kubectl get pods -l owner=iqbal`  
+   `kubectl get pods -l ‘[complex conditions]’`  
+   ex: `kubectl get pods -l ‘env in (development, production)’`  
 
 ## 3. Replication Controllers
 
-Concept:
+### Concept
 
 A replication controller (RC) is a supervisor for long-running pods. An RC will launch a specified number of pods called “replicas” and makes sure that they keep running.
 
-Steps:
+### Steps
 
 - Define a replica in configuration file. See “kubernetes-by-example/replication-controllers/rc.yaml” to see how to define replicas in a configuration file.
 
-Useful commands:
+### Commonly Used Commands
 
 - To show rc:
     - kubectl get rc
@@ -91,5 +97,5 @@ Useful commands:
     - kubectl delete rc [name]
     - ex: kubectl delete rc rcex
 
-4 - Deployments
+## 4. Deployments
 
