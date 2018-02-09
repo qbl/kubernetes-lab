@@ -1,6 +1,10 @@
 # Kubernetes by Example
 
-## Requirements
+## 0. Forweords
+
+This is my note when I learn Kubernetes from [Kubernetes by Example](http://kubernetesbyexample.com/). This note is mainly created so that I can learn the materials as if I'm about to teach it to someone else, just as suggested in [The Feynman Technique](https://collegeinfogeek.com/feynman-technique/). If you find this learning note useful, most credits goes to the people at [Kubernetes by Example](http://kubernetesbyexample.com/).
+
+### Requirements
 
 - Install minikube
 - [Install xhyve](https://github.com/mist64/xhyve)
