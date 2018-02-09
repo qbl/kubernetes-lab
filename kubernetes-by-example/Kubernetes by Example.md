@@ -1,6 +1,6 @@
 # Kubernetes by Example
 
-## 0. Forweords
+## 0. Intro
 
 This is my note when I learn Kubernetes from [Kubernetes by Example](http://kubernetesbyexample.com/). This note is mainly created so that I can learn the materials as if I'm about to teach it to someone else, just as suggested in [The Feynman Technique](https://collegeinfogeek.com/feynman-technique/). If you find this learning note useful, most credits goes to the people at [Kubernetes by Example](http://kubernetesbyexample.com/).
 
@@ -92,14 +92,18 @@ A replication controller (RC) is a supervisor for long-running pods. An RC will 
 
 ### Commonly Used Commands
 
-- To show rc:
-    - kubectl get rc
-- To scale up:
-    - kubectl scale --replicas=[number] rc/[rc_name]
-    - ex: kubectl scale --replicas=3 rc/rcex
-- To delete an rc and all its pods:
-    - kubectl delete rc [name]
-    - ex: kubectl delete rc rcex
+1. To show rc:
+
+   `kubectl get rc`  
+
+2. To scale up:
+   
+   `kubectl scale --replicas=[number] rc/[rc_name]`  
+   ex: `kubectl scale --replicas=3 rc/rcex`  
+
+3. To delete an rc and all its pods:
+
+   `kubectl delete rc [name]` 
+   ex: `kubectl delete rc rcex`  
 
 ## 4. Deployments
-
