@@ -151,9 +151,11 @@ kubectl get rs
 kubectl get pods
 ```
 
-Commands above should return list of deployment, replica sets, and pods that we set using "deployment-0.9.yaml" file. Afterward we can check the services that run by getting inside our deployment using `minikube ssh` and then check it by using `curl 172.17.0.8:9876/info` (this IP address and URL endpoint is just an example, check the IP address of your pods using `kubectl describe pods | grep IP:`) to see if it serves the right version of our service (in this case 0.9).
+   Commands above should return list of deployment, replica sets, and pods that we set using "deployment-0.9.yaml" file. Afterward we can check the services that run by getting inside our deployment using `minikube ssh` and then check it by using `curl 172.17.0.8:9876/info` (this IP address and URL endpoint is just an example, check the IP address of your pods using `kubectl describe pods | grep IP:`) to see if it serves the right version of our service (in this case 0.9).
 
 4. Change our deployment version to 1.0
+   
+   Save the file below as "deployment-1.0.yaml" and execute `kubectl apply -f deployment-1.0.yaml`.  
 
 ```
 apiVersion: apps/v1beta1
@@ -177,11 +179,7 @@ spec:
           value: "1.0"
 ```
 
-Save the file above as "deployment-1.0.yaml" and execute the following command:
-
-`kubectl apply -f deployment-1.0.yaml`.
-
-Afterward we can check the services that run by getting inside our deployment using `minikube ssh` and then check it by using `curl 172.17.0.9:9876/info` (this IP address and URL endpoint is just an example, check the IP address of your pods using `kubectl describe pods | grep IP:`) to see if it serves the right version of our service (in this case version 1.0).
+   Afterward we can check the services that run by getting inside our deployment using `minikube ssh` and then check it by using `curl 172.17.0.9:9876/info` (this IP address and URL endpoint is just an example, check the IP address of your pods using `kubectl describe pods | grep IP:`) to see if it serves the right version of our service (in this case version 1.0).
 
 ### Commonly Used Commands
 
