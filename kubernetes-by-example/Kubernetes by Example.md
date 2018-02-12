@@ -107,3 +107,110 @@ A replication controller (RC) is a supervisor for long-running pods. An RC will 
    ex: `kubectl delete rc rcex`  
 
 ## 4. Deployments
+
+### Concept
+
+A deployment is a supervisor for pods and replica sets. A deployment gives fine-grained control over how and when a new pod version is rolled out or rolled back from one state to another.
+
+### Steps
+
+1. Create a file named "deployment-0.9.yaml" with content as follows:
+
+```
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: sise-deploy
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: sise
+    spec:
+      containers:
+      - name: sise
+        image: mhausenblas/simpleservice:0.5.0
+        ports:
+        - containerPort: 9876
+        env:
+        - name: SIMPLE_SERVICE_VERSION
+          value: "0.9"
+```
+
+2. Execute command to create the deployment:
+   
+   `kubectl create -f [file_source]`  
+   ex: `kubectl create -f deployment-0.9.yaml`
+
+3. Check if the deployment is successful:
+   
+```
+kubectl get deploy
+kubectl get rs
+kubectl get pods
+```
+
+Commands above should return list of deployment, replica sets, and pods that we set using "deployment-0.9.yaml" file. Afterward we can check the services that run by getting inside our deployment using `minikube ssh` and then check it by using `curl 172.17.0.8:9876/info` (this IP address and URL endpoint is just an example, check the IP address of your pods using `kubectl describe pods | grep IP:`) to see if it serves the right version of our service (in this case 0.9).
+
+4. Change our deployment version to 1.0
+
+```
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: sise-deploy
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: sise
+    spec:
+      containers:
+      - name: sise
+        image: mhausenblas/simpleservice:0.5.0
+        ports:
+        - containerPort: 9876
+        env:
+        - name: SIMPLE_SERVICE_VERSION
+          value: "1.0"
+```
+
+Save the file above as "deployment-1.0.yaml" and execute the following command:
+
+`kubectl apply -f deployment-1.0.yaml`.
+
+Afterward we can check the services that run by getting inside our deployment using `minikube ssh` and then check it by using `curl 172.17.0.9:9876/info` (this IP address and URL endpoint is just an example, check the IP address of your pods using `kubectl describe pods | grep IP:`) to see if it serves the right version of our service (in this case version 1.0).
+
+### Commonly Used Commands
+
+1. To view list of deployments
+
+   `kubectl get deploy`
+
+2. To apply new deployment
+
+   `kubectl apply -f [file_source]`  
+   ex: `kubectl apply -f deployment-1.0.yaml`
+
+3. To check the progress of deployment rollout
+
+   `kubectl rollout status deploy/[name]`  
+   ex: `kubectl rollout status deploy/sise-deploy`
+
+4. To view the history of all deployments
+
+   `kubectl rollout history deploy/[name]`  
+   ex: `kubectl rollout history deploy/sise-deploy`
+
+5. To undo deployment
+
+   `kubectl rollout undo deploy/[name] --to-revision=[number]`  
+   ex: `kubectl rollout undo deploy/sise-deploy --to-revision=1`
+
+6. To delete a deployment
+
+   `kubectl delete deploy [name]`  
+   ex: `kubectl delete deploy sise-deploy`
+
