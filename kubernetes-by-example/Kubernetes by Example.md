@@ -210,3 +210,82 @@ spec:
    `kubectl delete deploy [name]`  
    ex: `kubectl delete deploy sise-deploy`
 
+## 5. Services
+
+### Concept
+
+A service is an abstraction for pods. As we can see from our previous exercises, pods change ip address whenever it is altered from one deployment to another. Therefeore pods need abstraction to provide a stable virtual IP address to allow other services to reliably connect to Containers inside the pods.
+
+Since service has a virtual IP address, this virtual IP address only serves to forward traffic to one or more pods. Kube-proxy is responsible to keep the mapping between virtual IP address to the pods up to date. 
+
+### Steps
+
+1. Create a file named "rc.yaml" with content as follow:
+
+```
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: rcsise
+spec:
+  replicas: 1
+  selector:
+    app: sise
+  template:
+    metadata:
+      name: somename
+      labels:
+        app: sise
+    spec:
+      containers:
+      - name: sise
+        image: mhausenblas/simpleservice:0.5.0
+        ports:
+        - containerPort: 9876
+```
+
+2. Execute `kubectl create -f rc.yaml`.
+
+3. Create a file named "svc.yaml" with content as follow:
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: simpleservice
+spec:
+  ports:
+    - port: 80
+      targetPort: 9876
+  selector:
+    app: sise
+```
+
+4. Execute `kubectl create -f svc.yaml`.
+
+5. Execute `kubectl get svc` to see the virtual IP address assigned to our service.
+
+6. Ssh into our cluster using `minikube ssh` and execute `curl [virtual IP address]:80/info` to verify that our service is up and running.
+
+7. From within our cluster, execute `sudo iptables-save | grep [service_name]` to see iptables rules created by Kubernetes. The followings are rules created by Kubernetes on my local cluster:
+
+```
+-A KUBE-SEP-27RLGY2HZIFGYSEK -s 172.17.0.7/32 -m comment --comment "default/simpleservice:" -j KUBE-MARK-MASQ
+-A KUBE-SEP-27RLGY2HZIFGYSEK -p tcp -m comment --comment "default/simpleservice:" -m tcp -j DNAT --to-destination 172.17.0.7:9876
+-A KUBE-SERVICES -d 10.110.201.186/32 -p tcp -m comment --comment "default/simpleservice: cluster IP" -m tcp --dport 80 -j KUBE-SVC-EZC6WLOVQADP4IAW
+-A KUBE-SVC-EZC6WLOVQADP4IAW -m comment --comment "default/simpleservice:" -j KUBE-SEP-27RLGY2HZIFGYSEK
+```
+
+8. Execute `kubectl scale --replicas=[number] rc/[replica_name]` to add more replica sets. Afterward, ssh again to our cluster and execute `sudo iptables-save | grep [service_name]` again to see iptables rules updated by Kubernetes. The followings are iptables rules in my local cluster after I scaled my replica sets to 2:
+
+```
+-A KUBE-SEP-27RLGY2HZIFGYSEK -s 172.17.0.7/32 -m comment --comment "default/simpleservice:" -j KUBE-MARK-MASQ
+-A KUBE-SEP-27RLGY2HZIFGYSEK -p tcp -m comment --comment "default/simpleservice:" -m tcp -j DNAT --to-destination 172.17.0.7:9876
+-A KUBE-SEP-WQEHQVAB2TSTRDTS -s 172.17.0.8/32 -m comment --comment "default/simpleservice:" -j KUBE-MARK-MASQ
+-A KUBE-SEP-WQEHQVAB2TSTRDTS -p tcp -m comment --comment "default/simpleservice:" -m tcp -j DNAT --to-destination 172.17.0.8:9876
+-A KUBE-SERVICES -d 10.110.201.186/32 -p tcp -m comment --comment "default/simpleservice: cluster IP" -m tcp --dport 80 -j KUBE-SVC-EZC6WLOVQADP4IAW
+-A KUBE-SVC-EZC6WLOVQADP4IAW -m comment --comment "default/simpleservice:" -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-27RLGY2HZIFGYSEK
+-A KUBE-SVC-EZC6WLOVQADP4IAW -m comment --comment "default/simpleservice:" -j KUBE-SEP-WQEHQVAB2TSTRDTS
+```
+
+
