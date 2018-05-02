@@ -51,7 +51,7 @@ Client Version: version.Info{Major:"1", Minor:"10", GitVersion:"v1.10.1", GitCom
 
 ## 3. Provisioning Compute Resource
 
-### 3.1 Networking
+### 3.1. Networking
 
 Kubernetes assumes a flat network in which containers can communicate with each other.
 
@@ -97,3 +97,18 @@ kubernetes-the-hard-way-allow-internal  kubernetes-the-hard-way  INGRESS    1000
 ```
 
 
+#### 3.1.3. Kubernetes Public IP Address
+
+1. Allocate a static public IP address for our Kubernetes API Servers   
+
+```
+gcloud compute addresses create kubernetes-the-hard-way \
+  --region $(gcloud config get-value compute/region)
+```
+
+2. To verify, run `gcloud compute addresses list --filter="name=('kubernetes-the-hard-way')"`, the result should look like this:
+
+```
+NAME                     REGION      ADDRESS      STATUS
+kubernetes-the-hard-way  asia-east1  XX.XXX.X.XX  RESERVED
+```
