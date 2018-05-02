@@ -112,3 +112,56 @@ gcloud compute addresses create kubernetes-the-hard-way \
 NAME                     REGION      ADDRESS      STATUS
 kubernetes-the-hard-way  asia-east1  XX.XXX.X.XX  RESERVED
 ```
+
+### 3.2. Compute Instances
+
+We are going to provision three compute instances for Kubernetes controllers and two compute instances for Kubernetes workers.
+
+1. Provision Kubernetes Controllers  
+
+```
+for i in 0 1 2; do
+  gcloud compute instances create controller-${i} \
+    --async \
+    --boot-disk-size 200GB \
+    --can-ip-forward \
+    --image-family ubuntu-1604-lts \
+    --image-project ubuntu-os-cloud \
+    --machine-type n1-standard-1 \
+    --private-network-ip 10.240.0.1${i} \
+    --scopes compute-rw,storage-ro,service-management,service-control,logging-write,monitoring \
+    --subnet kubernetes \
+    --tags kubernetes-the-hard-way,controller
+done
+```
+
+2. Provision Kubernetes Workers  
+ 
+```
+for i in 0 1 2; do
+  gcloud compute instances create worker-${i} \
+    --async \
+    --boot-disk-size 200GB \
+    --can-ip-forward \
+    --image-family ubuntu-1604-lts \
+    --image-project ubuntu-os-cloud \
+    --machine-type n1-standard-1 \
+    --metadata pod-cidr=10.200.${i}.0/24 \
+    --private-network-ip 10.240.0.2${i} \
+    --scopes compute-rw,storage-ro,service-management,service-control,logging-write,monitoring \
+    --subnet kubernetes \
+    --tags kubernetes-the-hard-way,worker
+done
+```
+
+3. To verify, run `gcloud compute instances list`. The result should look like this:
+
+```
+NAME          ZONE          MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP     STATUS
+controller-0  asia-east1-a  n1-standard-1               10.240.0.10  35.234.32.234   RUNNING
+controller-1  asia-east1-a  n1-standard-1               10.240.0.11  35.234.20.221   RUNNING
+controller-2  asia-east1-a  n1-standard-1               10.240.0.12  35.234.55.208   RUNNING
+worker-0      asia-east1-a  n1-standard-1               10.240.0.20  35.234.50.172   RUNNING
+worker-1      asia-east1-a  n1-standard-1               10.240.0.21  35.194.229.3    RUNNING
+worker-2      asia-east1-a  n1-standard-1               10.240.0.22  35.194.152.171  RUNNING
+```
