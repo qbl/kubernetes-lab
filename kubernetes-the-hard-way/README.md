@@ -62,61 +62,69 @@ Kubernetes assumes a flat network in which containers can communicate with each 
 
 #### 3.1.1. Virtual Private Cloud
 
-1. Create the VPC  
-   `gcloud compute networks create kubernetes-the-hard-way --subnet-mode custom`
+1. Create the VPC.
 
-2. Create a subnet named `kubernetes`  
+     ```
+     gcloud compute networks create kubernetes-the-hard-way --subnet-mode custom
+     ```
 
-```
-gcloud compute networks subnets create kubernetes \
-  --network kubernetes-the-hard-way \
-  --range 10.240.0.0/24
-```
+2. Create a subnet named `kubernetes`.
+
+     ```
+     gcloud compute networks subnets create kubernetes \
+     --network kubernetes-the-hard-way \
+     --range 10.240.0.0/24
+     ```
 
 #### 3.1.2. Firewall Rules
 
-1. Create a firewall rule that allows internal communication across all protocols
+1. Create a firewall rule that allows internal communication across all protocols.
 
-```
-gcloud compute firewall-rules create kubernetes-the-hard-way-allow-internal \
-  --allow tcp,udp,icmp \
-  --network kubernetes-the-hard-way \
-  --source-ranges 10.240.0.0/24,10.200.0.0/16
-```
+     ```
+     gcloud compute firewall-rules create kubernetes-the-hard-way-allow-internal \
+     --allow tcp,udp,icmp \
+     --network kubernetes-the-hard-way \
+     --source-ranges 10.240.0.0/24,10.200.0.0/16
+     ```
 
-2. Create a firewall rule that allows SSH, ICMP, and HTTPS from external
+2. Create a firewall rule that allows SSH, ICMP, and HTTPS from external.
 
-```
-gcloud compute firewall-rules create kubernetes-the-hard-way-allow-external \
-  --allow tcp:22,tcp:6443,icmp \
-  --network kubernetes-the-hard-way \
-  --source-ranges 0.0.0.0/0
-```
+     ```
+     gcloud compute firewall-rules create kubernetes-the-hard-way-allow-external \
+     --allow tcp:22,tcp:6443,icmp \
+     --network kubernetes-the-hard-way \
+     --source-ranges 0.0.0.0/0
+     ```
 
 3. To verify our setup is correct, run `gcloud compute firewall-rules list --filter="network:kubernetes-the-hard-way"`. The result should look like this:
 
-```
-NAME                                    NETWORK                  DIRECTION  PRIORITY  ALLOW                 DENY
-kubernetes-the-hard-way-allow-external  kubernetes-the-hard-way  INGRESS    1000      tcp:22,tcp:6443,icmp
-kubernetes-the-hard-way-allow-internal  kubernetes-the-hard-way  INGRESS    1000      tcp,udp,icmp
-```
+     ```
+     NAME                                    NETWORK                  DIRECTION  PRIORITY  ALLOW                 DENY
+     kubernetes-the-hard-way-allow-external  kubernetes-the-hard-way  INGRESS    1000      tcp:22,tcp:6443,icmp
+     kubernetes-the-hard-way-allow-internal  kubernetes-the-hard-way  INGRESS    1000      tcp,udp,icmp
+     ```
 
 
 #### 3.1.3. Kubernetes Public IP Address
 
 1. Allocate a static public IP address for our Kubernetes API Servers   
+     ```
+     gcloud compute addresses create kubernetes-the-hard-way \
+     --region $(gcloud config get-value compute/region)
+     ```
 
-```
-gcloud compute addresses create kubernetes-the-hard-way \
-  --region $(gcloud config get-value compute/region)
-```
+2. To verify, run:
 
-2. To verify, run `gcloud compute addresses list --filter="name=('kubernetes-the-hard-way')"`, the result should look like this:
+     ```
+     gcloud compute addresses list --filter="name=('kubernetes-the-hard-way')"
+     ```
+     
+     The result should look like this:
 
-```
-NAME                     REGION      ADDRESS      STATUS
-kubernetes-the-hard-way  asia-east1  XX.XXX.X.XX  RESERVED
-```
+     ```
+     NAME                     REGION      ADDRESS      STATUS
+     kubernetes-the-hard-way  asia-east1  XX.XXX.X.XX  RESERVED
+     ```
 
 ### 3.2. Compute Instances
 
