@@ -4,7 +4,7 @@
 
 The goal of this repo is to document and store scripts I use to setup a Kubernetes cluster by following tutorial [Kubernetes The Hardway](https://github.com/kelseyhightower/kubernetes-the-hard-way). The goal of the whole exercise is to be able to setup a Kubernetes cluster from scratch without using additional tools such as Kops, Kubeadm, or Tectonic. The whole exercise will include:
 1. Setting up a Kubernetes cluster on Google Cloud Platform using scripts
-2. Setting up a Kubernetes cluster on AWS, with its underlying infrastructure provisioned with Terraform and its configuration scripts performed with Chef
+2. Setting up a Kubernetes cluster on AWS, with its underlying infrastructure provisioned with Terraform and cloud-init script in Terraform
 3. Setting up a Kubenrnets cluster on VMs in non-cloud-provider local datacenter
 
 # Setting Up Kubernetes Cluster in GCP
@@ -25,29 +25,34 @@ There are three main client tools that we need to install:
 Now let's install them.
 
 1. Install `cfssl`  
-   In my experience, installing `cfssl` using binary somehow did not work so I used `brew install cfssl` instead. The version installed in my setup is:
 
-```
-Version: 1.3.0
-Revision: dev
-Runtime: go1.10
-```
+     In my experience, installing `cfssl` using binary somehow did not work so I used `brew install cfssl` instead. The version installed in my setup is:
+
+     ```
+     Version: 1.3.0
+     Revision: dev
+     Runtime: go1.10
+     ```
 
 2. Install `cfssljson`  
-   As for `cfssljson`, in my experience, I could not install it using binary from the tutorial as well so I used `go get -u github.com/cloudflare/cfssl/cmd/cfssljson` instead. The version installed in my setup is:
 
-```
-Version: 1.3.0
-Revision: dev
-Runtime: go1.10
-```
+     As for `cfssljson`, in my experience, I could not install it using binary from the tutorial as well so I used `go get -u github.com/cloudflare/cfssl/cmd/cfssljson` instead. The version installed in my setup is:
+
+     ```
+     Version: 1.3.0
+     Revision: dev
+     Runtime: go1.10
+     ```
 
 3. Install `kubectl`  
-   For `kubectl`, I used `brew install kubectl` command to install it. The version installed in my setup is (the result of `kubectl version --client`):
 
-```
-Client Version: version.Info{Major:"1", Minor:"10", GitVersion:"v1.10.1", GitCommit:"d4ab47518836c750f9949b9e0d387f20fb92260b", GitTreeState:"clean", BuildDate:"2018-04-13T22:27:55Z", GoVersion:"go1.9.5", Compiler:"gc", Platform:"darwin/amd64"}
-```
+     For `kubectl`, I initially have version 1.10.1 installed with Homebrew. Since the latest tutorial uses 1.10.2, I reinstalled using this commands:
+
+     ```
+     curl -o kubectl https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/darwin/amd64/kubectl
+     chmod +x kubectl
+     sudo mv kubectl /usr/local/bin/
+     ```
 
 ## 3. Provisioning Compute Resource
 
