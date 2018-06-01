@@ -178,3 +178,58 @@ We are going to provision three compute instances for Kubernetes controllers and
      worker-1      asia-east1-a  n1-standard-1               10.240.0.21  35.194.229.3    RUNNING
      worker-2      asia-east1-a  n1-standard-1               10.240.0.22  35.194.152.171  RUNNING
      ```
+
+## 4. Provisioning a Certificate Authority and Generating TLS Certificates
+
+### 4.1. Certificate Authority (CA)
+
+1. Generate CA configuration file, certificate, and private key.
+
+     Generate ca-config.json file:
+
+     ```
+     cat > ca-config.json <<EOF
+     {
+       "signing": {
+         "default": {
+           "expiry": "8760h"
+         },
+         "profiles": {
+           "kubernetes": {
+             "usages": ["signing", "key encipherment", "server auth", "client auth"],
+             "expiry": "8760h"
+           }
+         }
+       }
+     }
+     EOF
+     ```
+
+     Generate ca-csr.json file:
+
+     ```
+     cat > ca-csr.json <<EOF
+     {
+       "CN": "Kubernetes",
+       "key": {
+         "algo": "rsa",
+         "size": 2048
+       },
+       "names": [
+         {
+           "C": "ID",
+           "L": "Jakarta",
+           "O": "Kubernetes",
+           "OU": "CA",
+           "ST": "DKI Jakarta"
+         }
+       ]
+     }
+     EOF
+     ```
+
+     Generate the actual key:
+
+     ```
+     cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+     ```
