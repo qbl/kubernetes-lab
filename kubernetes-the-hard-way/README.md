@@ -1194,7 +1194,7 @@ ok
 
 ## 9. Bootstrapping The Kubernetes Worker Nodes
 
-### 8.1. Preparation
+### 9.1. Preparation
 
 1. `ssh` into each worker:
 
@@ -1206,14 +1206,16 @@ ok
 
      The next steps should be performed in each controller.
 
-2. Install OS dependencies:
+### 9.2. Provisioning Worker Nodes
+
+1. Install OS dependencies:
 
      ```
      sudo apt-get update
      sudo apt-get -y install socat conntrack ipset
      ```
 
-3. Download and install worker binaries:
+2. Download and install worker binaries:
 
      ```
      wget -q --show-progress --https-only --timestamping \
@@ -1227,7 +1229,7 @@ ok
        https://storage.googleapis.com/kubernetes-release/release/v1.10.2/bin/linux/amd64/kubelet
      ```
 
-4. Create the installation directories:
+3. Create the installation directories:
 
      ```
      sudo mkdir -p \
@@ -1239,7 +1241,7 @@ ok
        /var/run/kubernetes
      ```
 
-5. Install the worker binaries:
+4. Install the worker binaries:
 
      ```
      chmod +x kubectl kube-proxy kubelet runc.amd64 runsc
@@ -1250,7 +1252,7 @@ ok
      sudo tar -xvf containerd-1.1.0.linux-amd64.tar.gz -C /
      ```
 
-6. Configure CNI Networking.
+5. Configure CNI Networking.
 
      Retrieve Pod CIDR for each worker:
 
@@ -1292,7 +1294,7 @@ ok
      EOF
      ```
 
-7. Configure containerd.
+6. Configure containerd.
 
      Create containerd directory:
 
@@ -1344,7 +1346,7 @@ ok
      EOF
      ```
 
-8. Configure Kubelet.
+7. Configure Kubelet.
 
      Move required files to their proper place:
 
@@ -1407,7 +1409,7 @@ ok
      EOF
      ```
 
-9. Configure Kubernetes proxy.
+8. Configure Kubernetes proxy.
 
      Move `kube-proxy.kubeconfig` to its proper place:
 
@@ -1447,7 +1449,7 @@ ok
      EOF
      ```
 
-10. Start worker services:
+9. Start worker services:
 
      ```
      sudo systemctl daemon-reload
@@ -1455,7 +1457,7 @@ ok
      sudo systemctl start containerd kubelet kube-proxy
      ```
 
-11. Verification.
+10. Verification.
 
      To verify our setup, run the following command from local machine used to setup the whole cluster:
 
