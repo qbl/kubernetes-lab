@@ -1474,3 +1474,64 @@ ok
      worker-1   Ready     <none>    20s       v1.10.2
      worker-2   Ready     <none>    20s       v1.10.2
      ```
+
+## 10. Configuring kubectl for Remote Access
+
+1. Generate a kubeconfig file suitable for authenticating as `admin` user.
+
+     Run the following commands in the same directory where we store our certificate files in local machine.
+
+     ```
+     KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
+       --region $(gcloud config get-value compute/region) \
+       --format 'value(address)')
+     
+     kubectl config set-cluster kubernetes-the-hard-way \
+       --certificate-authority=ca.pem \
+       --embed-certs=true \
+       --server=https://${KUBERNETES_PUBLIC_ADDRESS}:6443
+     
+     kubectl config set-credentials admin \
+       --client-certificate=admin.pem \
+       --client-key=admin-key.pem
+     
+     kubectl config set-context kubernetes-the-hard-way \
+       --cluster=kubernetes-the-hard-way \
+       --user=admin
+     
+     kubectl config use-context kubernetes-the-hard-way
+     ```
+
+2. Verification.
+
+     To verify our setup, run the following command:
+     
+     ```
+     kubectl get componentstatuses
+     ```
+
+     The result should look like this:
+
+     ```
+     NAME                 STATUS    MESSAGE             ERROR
+     controller-manager   Healthy   ok
+     scheduler            Healthy   ok
+     etcd-0               Healthy   {"health":"true"}
+     etcd-1               Healthy   {"health":"true"}
+     etcd-2               Healthy   {"health":"true"}
+     ```
+
+     To list Kubernetes nodes:
+
+     ```
+     kubectl get nodes
+     ```
+
+     The result should look like this:
+
+     ```
+     NAME       STATUS    ROLES     AGE       VERSION
+     worker-0   Ready     <none>    1h        v1.10.2
+     worker-1   Ready     <none>    1h        v1.10.2
+     worker-2   Ready     <none>    1h        v1.10.2
+     ```
