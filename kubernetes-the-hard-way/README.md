@@ -743,6 +743,8 @@ We are going to provision three compute instances for Kubernetes controllers and
      gcloud compute ssh controller-2
      ```
 
+     The next steps should be performed in each controller.
+
 2. Download `etcd` binary:
 
      ```
