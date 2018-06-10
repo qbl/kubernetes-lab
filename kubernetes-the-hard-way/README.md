@@ -1559,3 +1559,48 @@ We are going to add network routes among worker nodes so pods can communicate wi
          --destination-range 10.200.${i}.0/24
      done
      ```
+
+## 12. Deploying DNS Cluster Add-On
+
+1. Deploy DNS Cluster Add-On.
+
+     ```
+     kubectl create -f https://storage.googleapis.com/kubernetes-the-hard-way/kube-dns.yaml
+     ```
+     Now if we run:
+     
+     ```
+     kubectl get pods -l k8s-app=kube-dns -n kube-system
+     ```
+     
+     We should see something like this:
+     
+     ```
+     NAME                        READY     STATUS    RESTARTS   AGE
+     kube-dns-598d7bf7d4-nb7l9   3/3       Running   0          27s
+      ```
+
+2. Verification.
+
+     To verify our `kube-dns` setup, we try to deploy a busybox image:
+
+     ```
+     kubectl run busybox --image=busybox --command -- sleep 3600
+     ```
+
+     Once the pod is created, we can try doing `nslookup` on it:
+
+     ```
+     POD_NAME=$(kubectl get pods -l run=busybox -o jsonpath="{.items[0].metadata.name}")
+     kubectl exec -ti $POD_NAME -- nslookup kubernetes
+     ```
+
+     The result should look like this:
+
+     ```
+     Server:    10.32.0.10
+     Address 1: 10.32.0.10 kube-dns.kube-system.svc.cluster.local
+     
+     Name:      kubernetes
+     Address 1: 10.32.0.1 kubernetes.default.svc.cluster.local
+     ```
