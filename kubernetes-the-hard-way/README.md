@@ -1535,3 +1535,27 @@ ok
      worker-1   Ready     <none>    1h        v1.10.2
      worker-2   Ready     <none>    1h        v1.10.2
      ```
+
+## 11. Provisioning Pod Network Routes
+
+We are going to add network routes among worker nodes so pods can communicate with other pods on different nodes.
+
+1. Print internal IP address and CIDR range of pods in each nodes:
+
+     ```
+     for instance in worker-0 worker-1 worker-2; do
+       gcloud compute instances describe ${instance} \
+         --format 'value[separator=" "](networkInterfaces[0].networkIP,metadata.items[0].value)'
+     done
+     ```
+
+2. Create network routes for each worker instance:
+
+     ```
+     for i in 0 1 2; do
+       gcloud compute routes create kubernetes-route-10-200-${i}-0-24 \
+         --network kubernetes-the-hard-way \
+         --next-hop-address 10.240.0.2${i} \
+         --destination-range 10.200.${i}.0/24
+     done
+     ```
